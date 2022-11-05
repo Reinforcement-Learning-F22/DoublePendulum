@@ -17,7 +17,7 @@ b = 0.08 # friction in actuator
 dt = 0.01 # step value
 
 # define the environment
-env = Pendulum(m=m, L=L, I=I, b=b, dt=dt, mode='swing_up')
+env = Pendulum(m=m, L=L, I=I, b=b, dt=dt, mode='balance')
 env.reset()
 
 # Taking random actions and show the real time simulation
@@ -34,11 +34,14 @@ while True:
 cv2.waitKey(2000)
 env.close()
 
+
+
 model = DummyVecEnv([lambda: env])
 model = PPO('MlpPolicy', model, verbose = 1)
-model.learn(total_timesteps=200000)
+
+model.learn(total_timesteps=20000)
 
 # Evaluating the results of training 
-print(evaluate_policy(model, env, n_eval_episodes=10, render=True))
-cv2.waitKey(-1)
+env.continues_run_mode = True
+print(evaluate_policy(model, env, n_eval_episodes=1, render=True))
 env.close()

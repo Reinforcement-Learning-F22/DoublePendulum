@@ -32,7 +32,7 @@ class Pendulum(Env):
         self.theta = theta
         self.dtheta = dtheta
         
-        # The contro of the system is tourq
+        # The control of the system is tourq
         self.tourq = np.array([0])
 
         # Mode of working where we have two modes 
@@ -95,8 +95,8 @@ class Pendulum(Env):
         if self.max_itr: self.max_itr = 200
 
       elif self.mode == 'swing_up':
-        # set the initial_angle to random value
-        self.theta  = np.random.uniform(-np.pi, np.pi)
+        # set the initial_angle to random value near the down balance angle
+        self.theta  = np.pi + np.random.uniform(-0.05, 0.05)
 
         # set the angular velocity to random value
         self.dtheta = np.random.uniform(-1.0, 1.0)
@@ -176,6 +176,9 @@ class Pendulum(Env):
         # Termination if the pendulum is outside the angle range
         if np.abs(self.theta) > np.pi * 12.0 / 180:
           done = True
+
+        # Increment the episodic return
+        self.ep_return += 1
       
       elif self.mode == 'swing_up':
         reward = -(2*self.theta**2 + 0.1*self.dtheta**2 + 0.001*action**2)
@@ -186,6 +189,9 @@ class Pendulum(Env):
         else:
           self.alive += 0
 
+        # Increment the episodic return
+        self.ep_return = self.alive
+        
         # If alive time is larger than 200 iteration then it is done
         if self.alive >= self.max_itr / 2:
           done = True
@@ -193,9 +199,6 @@ class Pendulum(Env):
       # The lenght of the episode is more than the calculated lenght
       if self.t >= self.max_itr * self.dt:
         done = True
-    
-      # Increment the episodic return
-      self.ep_return += reward
 
       # Draw the new state
       self.system_plot()

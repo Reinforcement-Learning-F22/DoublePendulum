@@ -32,6 +32,7 @@ class Pendulum(Env):
         self.theta = theta
         self.dtheta = dtheta
         
+        # The contro of the system is tourq
         self.tourq = np.array([0])
 
         # Mode of working where we have two modes 
@@ -103,9 +104,12 @@ class Pendulum(Env):
         # Setting the default episode lenght in swing up mode
         if self.max_itr: self.max_itr = 500
 
+        # Define the life time for termination criterial
+        self.alive = 0 
+
       # Set the initial action
       self.tourq = np.array([0])
-      
+
       # Set the observations
       self.observation = [self.theta, self.dtheta]
 
@@ -168,15 +172,24 @@ class Pendulum(Env):
       # which make the angle have more influent than the other parameters 
       if self.mode == 'balance':
         reward = 1
+
         # Termination if the pendulum is outside the angle range
-        
         if np.abs(self.theta) > np.pi * 12.0 / 180:
           done = True
       
       elif self.mode == 'swing_up':
         reward = -(2*self.theta**2 + 0.1*self.dtheta**2 + 0.001*action**2)
-        # Termination criteria the pendulum is outside the angle range
-      
+        
+        # Adding 1 to allive if the pendulum is in angle range
+        if np.abs(self.theta) < np.pi * 12.0 / 180:
+          self.alive += 1
+        else:
+          self.alive += 0
+
+        # If alive time is larger than 200 iteration then it is done
+        if self.alive >= self.max_itr / 2:
+          done = True
+
       # The lenght of the episode is more than the calculated lenght
       if self.t >= self.max_itr * self.dt:
         done = True

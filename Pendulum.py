@@ -37,8 +37,12 @@ class Pendulum(Env):
 
         # Mode of working where we have two modes 
         # 1. balance : the starting angle will be near balance and the agent must keep the pendulum balanced.
-        # 2. swing_up : any random angle between [-pi/2, pi/2], and the agent must bring the pendulum to balance position.
-        self.mode = mode
+        # 2. swing_up : the starting angle will be near pi/2, and the agent must bring the pendulum to balance position.
+        if mode in ['balance', 'swing_up']:
+          self.mode = mode
+        else:
+          self.mode = 'balance'
+          print(f'{mode} is not correct, mode set to balance' )
 
         # Observation of the system are [angle of the mass, angular speed of the mass]
         self.observation = [self.theta, self.dtheta]
@@ -47,17 +51,21 @@ class Pendulum(Env):
         self.observation_shape = (2, )
         self.observation_space = spaces.Box(low  = np.array([-np.pi/2, -8]), 
                                             high = np.array([+np.pi/2, +8]),
-                                            dtype = np.float32)
-    
-        # Using CV2 is more effecient than ploting
-        self.canvas = np.ones((600, 800, 3)) 
-
+                                            dtype = np.float32) 
 
         # Define an action space ranging from -2 to 2, which is the amount of tourque that must be applied
         self.action_space = spaces.Box(low  =np.array([-2.0]),
                                        high =np.array([+2.0]),
                                        shape = (1, ),
                                        dtype = np.float32)
+
+        # Using CV2 is more effecient than ploting
+        self.canvas = np.ones((600, 800, 3))
+
+        # Set variable for continue runing
+        self.continues_run_mode = False
+        self.external_tourq = 5
+        self.apply_external_tourq = 0
     
     # This function is for drawing the pendulum, the output will be (600, 800, 3) uint8 array
     def system_plot(self):
@@ -80,6 +88,15 @@ class Pendulum(Env):
       temp = cv2.putText(temp, "theta: " + str(round(self.theta, 3)), (595, 530), cv2.FONT_HERSHEY_PLAIN, 1.5, 255)
       temp = cv2.putText(temp, "dtheta: " + str(round(self.dtheta, 3)), (595, 550), cv2.FONT_HERSHEY_PLAIN, 1.5, 255)
       temp = cv2.putText(temp, "tourq: " + str(round(self.tourq[0], 3)), (595, 570), cv2.FONT_HERSHEY_PLAIN, 1.5, 255)
+
+      # Add instruction on the screan when run on continues running mode
+      if self.continues_run_mode:  
+        temp = cv2.rectangle(temp, (10, 490), (580, 590), (0, 0,0), 2)
+        temp = cv2.putText(temp, "Press i to increase tourq, Press d to decrease tourq", (15, 520), cv2.FONT_HERSHEY_PLAIN, 1, 255)
+        temp = cv2.putText(temp, "Press l to apply positive tourq, Press r to apply negative tourq", (15, 540), cv2.FONT_HERSHEY_PLAIN, 1, 255)
+        temp = cv2.putText(temp, "External tourq: " + str(self.external_tourq), (15, 560), cv2.FONT_HERSHEY_PLAIN, 1, 255)
+        temp = cv2.putText(temp, "Press any other key to exit", (15, 580), cv2.FONT_HERSHEY_PLAIN, 1, 255)
+
       self.canvas = temp
 
     # This is the function for reseting the system
@@ -132,8 +149,26 @@ class Pendulum(Env):
       if mode == "human":
         cv2.imshow('Pendulum', self.canvas)
         cv2.setWindowProperty('Pendulum', cv2.WND_PROP_TOPMOST, 1)
-        cv2.waitKey(10)
-    
+        key = cv2.waitKey(10) & 0xFF
+
+        # if we are in run mode we check the kes pressed by the user
+        if self.continues_run_mode:
+          if key == ord('i'):
+            # key i pressed
+            self.external_tourq += 1
+          elif key == ord('d'):
+            # key d pressed
+            self.external_tourq -= 1
+          elif key == ord('r'):
+            # key r pressed
+            self.apply_external_tourq = +1
+          elif key == ord('l'):
+            # key l pressed
+            self.apply_external_tourq = -1
+          elif key != 255:
+            # Exit at any key
+            self.apply_external_tourq = -2
+
       elif mode == "rgb_array":
         return self.canvas
     
@@ -159,7 +194,44 @@ class Pendulum(Env):
 
       # apply the action to the system
       x0 = [self.theta, self.dtheta]
-      sol = odeint(self.sys_ode, x0, [0, self.dt], args=(action, ))
+
+      # if we are in run mode we check the pressed key in the render function
+      if self.continues_run_mode:
+        # if the key is right arrow we apply a tourq to the right
+        if self.apply_external_tourq == 1:
+          sol = odeint(self.sys_ode, x0, [0, self.dt], args=(action - self.external_tourq, ))
+          self.apply_external_tourq = 0
+        # if the pressed key is left arrow we apply tourq to the left
+        elif self.apply_external_tourq == -1:
+          sol = odeint(self.sys_ode, x0, [0, self.dt], args=(action + self.external_tourq, ))
+          self.apply_external_tourq = 0
+        # if the pressed key is not related to tourque apply or change we end the simulation
+        elif self.apply_external_tourq != 0:
+          return self.observation, 0, True, {}
+        else:
+          sol = odeint(self.sys_ode, x0, [0, self.dt], args=(action, ))
+
+        self.theta, self.dtheta = sol[-1,0], sol[-1,1]
+        self.t += self.dt
+
+        self.observation = [self.theta, self.dtheta]
+
+        if self.mode == 'balance':
+          reward = 1
+          # Increment the episodic return
+          self.ep_return += 1
+      
+        elif self.mode == 'swing_up':
+          reward = -(2*self.theta**2 + 0.1*self.dtheta**2 + 0.001*action**2)
+
+        # Draw the new state
+        self.system_plot()
+
+        return self.observation, reward, False, {}
+
+      else:
+        sol = odeint(self.sys_ode, x0, [0, self.dt], args=(action, ))
+      
       self.theta, self.dtheta = sol[-1,0], sol[-1,1]
       self.t += self.dt
 

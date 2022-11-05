@@ -9,7 +9,7 @@ from scipy.integrate import odeint
 # That will make us able to use the same training and evaluting functions that used with standard gym libaries
 class Pendulum(Env):
     # Initializing function where to define the vallue of system parameters
-    def __init__(self,m , L, I, b, dt = 0.01, theta = 0, dtheta = 0, t = 0, g = 9.81, mode='balance'):
+    def __init__(self,m , L, I, b, dt = 0.01, theta = 0, dtheta = 0, t = 0, g = 9.81, mode='balance', max_itr = -1):
         super(Pendulum, self).__init__()
         
         # System parameters
@@ -24,13 +24,16 @@ class Pendulum(Env):
         self.x = L * np.sin(theta)
         self.y = L * np.cos(theta)
 
-        # The total time 
+        # Set timing parameters including total time and max iteration of the episode
         self.t = t
+        self.max_itr = max_itr
 
         # Angle and angular speed of the pedulum
         self.theta = theta
         self.dtheta = dtheta
         
+        self.tourq = np.array([0])
+
         # Mode of working where we have two modes 
         # 1. balance : the starting angle will be near balance and the agent must keep the pendulum balanced.
         # 2. swing_up : any random angle between [-pi/2, pi/2], and the agent must bring the pendulum to balance position.
@@ -58,7 +61,7 @@ class Pendulum(Env):
     # This function is for drawing the pendulum, the output will be (600, 800, 3) uint8 array
     def system_plot(self):
       temp = np.ones((600, 800, 3), dtype=np.uint8) * 255
-
+      
       # Draw the center
       temp = cv2.circle(temp, (400,300), 3, (0,0,255), -1)
 
@@ -71,6 +74,11 @@ class Pendulum(Env):
       # Draw the mass
       temp = cv2.circle(temp, (x, y), 10, (255,0,0), -1)
 
+      # Display the values of angle, angular speed and tourq on the simulation window
+      temp = cv2.rectangle(temp, (590, 490), (790, 590), (0, 0,0), 2)
+      temp = cv2.putText(temp, "theta: " + str(round(self.theta, 3)), (595, 530), cv2.FONT_HERSHEY_PLAIN, 1.5, 255)
+      temp = cv2.putText(temp, "dtheta: " + str(round(self.dtheta, 3)), (595, 550), cv2.FONT_HERSHEY_PLAIN, 1.5, 255)
+      temp = cv2.putText(temp, "tourq: " + str(round(self.tourq[0], 3)), (595, 570), cv2.FONT_HERSHEY_PLAIN, 1.5, 255)
       self.canvas = temp
 
     # This is the function for reseting the system
@@ -85,6 +93,10 @@ class Pendulum(Env):
         # calculate x, y related to the initial values
         self.x = self.L * np.sin(self.theta)
         self.y = self.L * np.cos(self.theta)
+
+        # Setting the default episode lenght in balance mode
+        if self.max_itr: self.max_itr = 200
+
       elif self.mode == 'swing_up':
         # set the initial_angle to random value
         self.theta  = np.random.uniform(-np.pi, np.pi)
@@ -95,6 +107,9 @@ class Pendulum(Env):
         # calculate x, y related to the initial values
         self.x = self.L * np.sin(self.theta)
         self.y = self.L * np.cos(self.theta)
+
+        # Setting the default episode lenght in swing up mode
+        if self.max_itr: self.max_itr = 500
 
       # Set the observations
       self.observation = [self.x, self.y, self.dtheta]
@@ -114,8 +129,10 @@ class Pendulum(Env):
     # This function either simulate the system at real time or return the array of the user
     def render(self, mode = "human"):
       assert mode in ["human", "rgb_array"], "Invalid mode, must be either \"human\" or \"rgb_array\""
+    
       if mode == "human":
         cv2.imshow('Pendulum', self.canvas)
+        cv2.setWindowProperty('Pendulum', cv2.WND_PROP_TOPMOST, 1)
         cv2.waitKey(10)
     
       elif mode == "rgb_array":
@@ -137,7 +154,7 @@ class Pendulum(Env):
     def step(self, action):
       # Flag that marks the termination of an episode
       done = False
-    
+      self.tourq = action
       # Assert that it is a valid action 
       assert self.action_space.contains(action), "Invalid Action"
 
@@ -158,20 +175,18 @@ class Pendulum(Env):
       # which make the angle have more influent than the other parameters 
       if self.mode == 'balance':
         reward = 1
-        # Termination criteria for the balance mode
-        # The pendulum is outside the angle range
-        # The lenght of the episode is more that 2 "if dt = 0.01 then it is 200 iterations"
-        if np.abs(self.theta) > np.pi * 12.0 / 180 or self.t >= 2:
+        # Termination if the pendulum is outside the angle range
+        
+        if np.abs(self.theta) > np.pi * 12.0 / 180:
           done = True
       
       elif self.mode == 'swing_up':
         reward = -(2*self.theta**2 + 0.1*self.dtheta**2 + 0.001*action**2)
-        # Termination criteria for the balance mode
-        # The pendulum is outside the angle range
-        # The lenght of the episode is more that 5 "if dt = 0.01 then it is 500 iterations"
-        if self.t >= 5:
-          done = True
-        
+        # Termination criteria the pendulum is outside the angle range
+      
+      # The lenght of the episode is more than the calculated lenght
+      if self.t >= self.max_itr * self.dt:
+        done = True
     
       # Increment the episodic return
       self.ep_return += reward

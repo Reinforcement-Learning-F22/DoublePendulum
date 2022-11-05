@@ -2,6 +2,7 @@
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.evaluation import evaluate_policy
+from stable_baselines3.common.callbacks import EvalCallback, StopTrainingOnRewardThreshold
 
 import cv2
 
@@ -16,7 +17,7 @@ b = 0.08 # friction in actuator
 dt = 0.01 # step value
 
 # define the environment
-env = Pendulum(m=m, L=L, I=I, b=b, dt=dt)
+env = Pendulum(m=m, L=L, I=I, b=b, dt=dt, mode='swing_up')
 env.reset()
 
 # Taking random actions and show the real time simulation
@@ -33,12 +34,11 @@ while True:
 cv2.waitKey(2000)
 env.close()
 
-# Training the agent
-env = DummyVecEnv([lambda: env])
-model = PPO('MlpPolicy', env, verbose = 1)
-model.learn(total_timesteps=20000)
+model = DummyVecEnv([lambda: env])
+model = PPO('MlpPolicy', model, verbose = 1)
+model.learn(total_timesteps=200000)
 
 # Evaluating the results of training 
-evaluate_policy(model, env, n_eval_episodes=10, render=True)
+print(evaluate_policy(model, env, n_eval_episodes=10, render=True))
 cv2.waitKey(-1)
 env.close()

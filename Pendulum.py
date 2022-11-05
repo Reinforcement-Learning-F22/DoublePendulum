@@ -20,9 +20,9 @@ class Pendulum(Env):
         self.g = g # gravity acceleration
         self.dt = dt # step size
 
-        # we can calculate the position of the mass 
-        self.x = L * np.sin(theta)
-        self.y = L * np.cos(theta)
+        # # we can calculate the position of the mass 
+        # self.x = L * np.sin(theta)
+        # self.y = L * np.cos(theta)
 
         # Set timing parameters including total time and max iteration of the episode
         self.t = t
@@ -39,13 +39,13 @@ class Pendulum(Env):
         # 2. swing_up : any random angle between [-pi/2, pi/2], and the agent must bring the pendulum to balance position.
         self.mode = mode
 
-        # Observation of the system are [position of the mass on x, position of the mass on y, angular speed of the mass]
-        self.observation = [self.x, self.y, self.dtheta]
+        # Observation of the system are [angle of the mass, angular speed of the mass]
+        self.observation = [self.theta, self.dtheta]
 
-        # Define the observation space [x, y, d_theta]
-        self.observation_shape = (3, )
-        self.observation_space = spaces.Box(low  = np.array([-L, -L, -8]), 
-                                            high = np.array([L, L, 8]),
+        # Define the observation space
+        self.observation_shape = (2, )
+        self.observation_space = spaces.Box(low  = np.array([-np.pi/2, -8]), 
+                                            high = np.array([+np.pi/2, +8]),
                                             dtype = np.float32)
     
         # Using CV2 is more effecient than ploting
@@ -90,10 +90,6 @@ class Pendulum(Env):
         # set the angular velocity to random value
         self.dtheta = np.random.uniform(-1.0, 1.0)
 
-        # calculate x, y related to the initial values
-        self.x = self.L * np.sin(self.theta)
-        self.y = self.L * np.cos(self.theta)
-
         # Setting the default episode lenght in balance mode
         if self.max_itr: self.max_itr = 200
 
@@ -104,15 +100,14 @@ class Pendulum(Env):
         # set the angular velocity to random value
         self.dtheta = np.random.uniform(-1.0, 1.0)
 
-        # calculate x, y related to the initial values
-        self.x = self.L * np.sin(self.theta)
-        self.y = self.L * np.cos(self.theta)
-
         # Setting the default episode lenght in swing up mode
         if self.max_itr: self.max_itr = 500
 
+      # Set the initial action
+      self.tourq = np.array([0])
+      
       # Set the observations
-      self.observation = [self.x, self.y, self.dtheta]
+      self.observation = [self.theta, self.dtheta]
 
       # set time to 0
       self.t = 0
@@ -163,10 +158,8 @@ class Pendulum(Env):
       sol = odeint(self.sys_ode, x0, [0, self.dt], args=(action, ))
       self.theta, self.dtheta = sol[-1,0], sol[-1,1]
       self.t += self.dt
-      self.x = +self.L * np.sin(self.theta)
-      self.y = -self.L * np.cos(self.theta)
 
-      self.observation = [self.x, self.y, self.dtheta]
+      self.observation = [self.theta, self.dtheta]
 
       # the reward depend on the mode of the pendulum
       # 1. balance : reward is 1 as well as the pendulum is between [-12, +12] degree.

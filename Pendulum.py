@@ -109,7 +109,7 @@ class Pendulum(Env):
         self.dtheta = np.random.uniform(-1.0, 1.0)
 
         # Setting the default episode lenght in balance mode
-        if self.max_itr: self.max_itr = 200
+        if self.max_itr == -1: self.max_itr = 200
 
       elif self.mode == 'swing_up':
         # set the initial_angle to random value near the down balance angle
@@ -119,7 +119,7 @@ class Pendulum(Env):
         self.dtheta = np.random.uniform(-1.0, 1.0)
 
         # Setting the default episode lenght in swing up mode
-        if self.max_itr: self.max_itr = 500
+        if self.max_itr == -1: self.max_itr = 500
 
         # Define the life time for termination criterial
         self.alive = 0 
@@ -153,16 +153,16 @@ class Pendulum(Env):
 
         # if we are in run mode we check the kes pressed by the user
         if self.continues_run_mode:
-          if key == ord('i'):
+          if key == ord('i') or key == 0:
             # key i pressed
             self.external_tourq += 1
-          elif key == ord('d'):
+          elif key == ord('d') or key == 1:
             # key d pressed
             self.external_tourq -= 1
-          elif key == ord('r'):
+          elif key == ord('r') or key == 3:
             # key r pressed
             self.apply_external_tourq = +1
-          elif key == ord('l'):
+          elif key == ord('l') or key == 2:
             # key l pressed
             self.apply_external_tourq = -1
           elif key != 255:
@@ -212,6 +212,13 @@ class Pendulum(Env):
           sol = odeint(self.sys_ode, x0, [0, self.dt], args=(action, ))
 
         self.theta, self.dtheta = sol[-1,0], sol[-1,1]
+        
+        while self.theta > np.pi:
+          self.theta = self.theta - 2*np.pi 
+        
+        while self.theta < -np.pi:
+          self.theta = self.theta + 2*np.pi
+
         self.t += self.dt
 
         self.observation = [self.theta, self.dtheta]

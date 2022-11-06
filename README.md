@@ -31,6 +31,13 @@ This is about make a RL agent to do the control of double pendulum and achieve t
 
 **All the libraries can be pip installed** using `python3 -m pip install -r requirements.txt`
 
+## Getting Started
+
+1. Clone this repo (for help see this [tutorial](https://help.github.com/articles/cloning-a-repository/)).
+1. Navigate to repository folder
+1. Install dependencies which are specified in requirements.txt. use `python3 -m pip install -r requirements.txt`
+1. Run `project.py`.
+
 The project start with single pendulum, it is better to run it on the local machine, because cv2.imshow() won't work and will give an error.
 You can set the parameter of your own system, it is very clear how to do that:
 ```

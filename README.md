@@ -37,6 +37,7 @@ This is about make a RL agent to do the control of double pendulum and achieve t
 1. Navigate to repository folder
 1. Install dependencies which are specified in requirements.txt. use `python3 -m pip install -r requirements.txt`
 1. Run `project.py`.
+1. Run `Uncertainity.py` if you want to test the model if there is changing in mass of the pendulum.
 
 # Single Pendulum
 The project start with single pendulum, it is better to run it on the local machine, because cv2.imshow() won't work and will give an error.
@@ -104,7 +105,7 @@ To test the agent we first activate the continues running mode:
 ```
 env.continues_run_mode = True
 ```
-in this mode the system will interact with the user, whom can use the keyboard to apply outside disturbance to the system, the user can use the arrows to increase or decrease the amount of external tourque she/he wants to apply, and the direction also, and also he can exit by pressinf any other key. 
+In this mode the system will interact with the user, whom can use the keyboard to apply outside disturbance to the system, the user can use the arrows to increase or decrease the amount of external tourque she/he wants to apply, and the direction also, and also he can exit by pressinf any other key. 
 ```python
 # Evaluating the results of training 
 env.continues_run_mode = True
@@ -119,3 +120,6 @@ l, left arrow    : apply the external tourque to the left
 r, right arrow   : apply the external tourque to the right
 q, any other key : finish the testing
 ```
+
+## Test with mass change
+We cahnge the mass randomally (20%) then we valute the model and we have success rate of 100%, and that is logical because the system is fully actuated and the only situation it could fail if the tourqe if the motor is not able to hold the mass.

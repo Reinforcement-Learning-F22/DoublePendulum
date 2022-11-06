@@ -38,6 +38,7 @@ This is about make a RL agent to do the control of double pendulum and achieve t
 1. Install dependencies which are specified in requirements.txt. use `python3 -m pip install -r requirements.txt`
 1. Run `project.py`.
 
+# Single Pendulum
 The project start with single pendulum, it is better to run it on the local machine, because cv2.imshow() won't work and will give an error.
 You can set the parameter of your own system, it is very clear how to do that:
 ```

@@ -16,6 +16,7 @@ This is about make a RL agent to do the control of double pendulum and achieve t
 * keyring>=23.11.0
 * lockfile>=0.12.2
 * lxml>=4.9.1
+* matplotlib>=3.6.1
 * mypy_extensions>=0.4.3
 * numpy>=1.23.4
 * opencv_python>=4.6.0.66

@@ -91,11 +91,17 @@ while True:
 cv2.waitKey(2000)
 env.close()
 ```
-After running the previous you will got the following result:
+After running the previous you will got the following result if the mode is set to `balance`:
+
 ![ezgif com-gif-maker](https://user-images.githubusercontent.com/90157234/200178563-60efb62e-be2b-4758-90f2-537f2d0f9f33.gif)
+
+And the following result if the mode is set to `swing_up`:
+
+![swing_up_test](https://user-images.githubusercontent.com/90157234/200198293-bef5d29d-1d89-4676-8076-9f59ee8e6983.gif)
 
 ## Train the agent
 We have now to train the agent, depend on the mode you can set the maximum number of iteration for training, swing_up mode is more general but also need much more time to be trained than the balance mode:
+1. balance mode:
 ```python
 model = DummyVecEnv([lambda: env])
 model = PPO('MlpPolicy', model, verbose = 1)
@@ -103,6 +109,13 @@ model = PPO('MlpPolicy', model, verbose = 1)
 model.learn(total_timesteps=20000)
 ```
 
+2. swing_up mode:
+```python
+model = DummyVecEnv([lambda: env])
+model = PPO('MlpPolicy', model, verbose = 1)
+
+model.learn(total_timesteps=200000)
+```
 ## Test the agent
 To test the agent we first activate the continues running mode:
 ```
@@ -123,9 +136,20 @@ l, left arrow    : apply the external tourque to the left
 r, right arrow   : apply the external tourque to the right
 q, any other key : finish the testing
 ```
+You can see the previous in the following window:
+<p align="center">
+  <img src="https://github.com/Reinforcement-Learning-F22/DoublePendulum/blob/main/img/SP_continues_mode.jpg" />
+</p>
 
 ## Test with mass change
-We cahnge the mass randomally (20%) then we evalute the model and we have success rate of 100%, and that is logical because the system is fully actuated and the only situation it could fail if the tourqe of the motor is not able to hold the mass.
+1. balance mode
+We change the mass randomally (20%) then we evalute the model and we have success rate of 100%, and that is logical because the system is fully actuated and the only situation it could fail if the tourqe of the motor is not able to hold the mass.
 <p align="center">
   <img src="https://github.com/Reinforcement-Learning-F22/DoublePendulum/blob/main/img/SP_Balance.png" />
+</p>
+
+2. swing_up mode
+We change the mass randomally (20%) then we evalute the model and we have success rate of 100%, and that is logical because the system is fully actuated and the only situation it could fail if the tourqe of the motor is not able to hold the mass.
+<p align="center">
+  <img src="https://github.com/Reinforcement-Learning-F22/DoublePendulum/blob/main/img/SP_Swing_Up.png" />
 </p>

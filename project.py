@@ -18,8 +18,10 @@ I = 0.01 # inertia of actuator
 b = 0.08 # friction in actuator 
 dt = 0.01 # step value
 
+mode = 'swing_up'
+
 # define the environment
-env = Pendulum(m=m, L=L, I=I, b=b, dt=dt, mode='balance')
+env = Pendulum(m=m, L=L, I=I, b=b, dt=dt, mode=mode)
 env.reset()
 
 # Taking random actions and show the real time simulation
@@ -36,16 +38,18 @@ while True:
 cv2.waitKey(2000)
 env.close()
 
-
-
 model = DummyVecEnv([lambda: env])
 model = PPO('MlpPolicy', model, verbose = 1)
 
-model.learn(total_timesteps=20000)
+model_path = './models'
+if mode == 'balance':
+  model.learn(total_timesteps=20000)
+  PPO_path = os.path.join(model_path, 'Pendulum_balance_model')
+elif mode == 'swing_up':
+  model.learn(total_timesteps=200000)
+  PPO_path = os.path.join(model_path, 'Pendulum_swing_up_model')
 
 # Saving model after trainig
-model_path = './models'
-PPO_path = os.path.join(model_path, 'Pendulum_balance_model')
 model.save(PPO_path)
 
 # Evaluating the results of training 

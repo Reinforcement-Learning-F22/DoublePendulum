@@ -32,13 +32,13 @@ This is about make a RL agent to do the control of double pendulum and achieve t
 
 **All the libraries can be pip installed** using `python3 -m pip install -r requirements.txt`
 
-## Getting Started
+## Getting Started 'Single Pendulum'
 
 1. Clone this repo (for help see this [tutorial](https://help.github.com/articles/cloning-a-repository/)).
 1. Navigate to repository folder
 1. Install dependencies which are specified in requirements.txt. use `python3 -m pip install -r requirements.txt`
 1. Run `project.py`.
-1. Run `Uncertainity.py` if you want to test the model if there is changing in mass of the pendulum.
+1. Run `Uncertainity.py` if you want to test the model if there is uncertainity in mass of the pendulum.
 
 # Single Pendulum
 The project start with single pendulum, it is better to run it on the local machine, because cv2.imshow() won't work and will give an error.

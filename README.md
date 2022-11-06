@@ -123,3 +123,4 @@ q, any other key : finish the testing
 
 ## Test with mass change
 We cahnge the mass randomally (20%) then we valute the model and we have success rate of 100%, and that is logical because the system is fully actuated and the only situation it could fail if the tourqe if the motor is not able to hold the mass.
+![Reward vs Episode in balance mode](https://github.com/Reinforcement-Learning-F22/DoublePendulum/blob/main/img/SP_Balance.png?raw=true)

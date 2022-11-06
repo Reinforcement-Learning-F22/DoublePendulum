@@ -4,6 +4,8 @@ from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.callbacks import EvalCallback, StopTrainingOnRewardThreshold
 
+import os
+
 import cv2
 
 from Pendulum import Pendulum
@@ -40,6 +42,11 @@ model = DummyVecEnv([lambda: env])
 model = PPO('MlpPolicy', model, verbose = 1)
 
 model.learn(total_timesteps=20000)
+
+# Saving model after trainig
+model_path = './models'
+PPO_path = os.path.join(model_path, 'Pendulum_balance_model')
+model.save(PPO_path)
 
 # Evaluating the results of training 
 env.continues_run_mode = True

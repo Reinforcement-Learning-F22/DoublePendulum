@@ -91,6 +91,8 @@ while True:
 cv2.waitKey(2000)
 env.close()
 ```
+After running the previous you will got the following result:
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/90157234/200178563-60efb62e-be2b-4758-90f2-537f2d0f9f33.gif)
 
 ## Train the agent
 We have now to train the agent, depend on the mode you can set the maximum number of iteration for training, swing_up mode is more general but also need much more time to be trained than the balance mode:

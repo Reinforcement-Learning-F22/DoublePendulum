@@ -1,6 +1,35 @@
 # DoublePendulum
 This is about make a RL agent to do the control of double pendulum and achieve the swing up and balancing problem.
 
+## Prerequisites
+*rotli==1.0.9
+*ConfigParser==5.3.0
+*cryptography==38.0.3
+*Cython==0.29.32
+*dl==0.1.0
+*docutils==0.19
+*gym==0.21.0
+*HTMLParser==0.0.2
+*importlib_metadata==4.13.0
+*ipaddr==2.2.0
+*keyring==23.11.0
+*lockfile==0.12.2
+*lxml==4.9.1
+*mypy_extensions==0.4.3
+*numpy==1.23.4
+*opencv_python==4.6.0.66
+*ordereddict==1.1
+*protobuf==4.21.9
+*pyOpenSSL==22.1.0
+*scipy==1.7.1
+*stable_baselines3==1.6.2
+*typing_extensions==4.4.0
+*wincertstore==0.2.1
+*xmlrpclib==1.0.1
+*zipp==3.10.0
+
+**All the libraries can be pip installed** using `pip install -r requirements.txt`
+
 The project start with single pendulum, it is better to run it on the local machine, because cv2.imshow() won't work and will give an error.
 You can set the parameter of your own system, it is very clear how to do that:
 ```

@@ -64,7 +64,7 @@ elif mode == 'swing_up':
         env.m = m_org*(1 + 0.2*np.random.uniform(-1, +1))
         eval_m.append(env.m)
         eval_rslt.append(evaluate_policy(model, env, n_eval_episodes=1, render=False)[0])
-        if eval_rslt[-1] > -1100: 
+        if (13079 + eval_rslt[-1])/13079 > 0.8: 
             success += 1
         else:
             print(env.m)

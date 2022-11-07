@@ -9,7 +9,7 @@ from scipy.integrate import odeint
 # That will make us able to use the same training and evaluting functions that used with standard gym libaries
 class Pendulum(Env):
     # Initializing function where to define the vallue of system parameters
-    def __init__(self,m , L, I, b, dt = 0.01, theta = 0, dtheta = 0, t = 0, g = 9.81, mode='balance', max_itr = -1):
+    def __init__(self,m , L, I, b, dt = 0.01, theta = 0, dtheta = 0, g = 9.81, mode='balance', max_itr = -1):
         super(Pendulum, self).__init__()
         
         # System parameters
@@ -25,7 +25,7 @@ class Pendulum(Env):
         # self.y = L * np.cos(theta)
 
         # Set timing parameters including total time and max iteration of the episode
-        self.t = t
+        self.t = 0
         self.max_itr = max_itr
 
         # Angle and angular speed of the pedulum
@@ -49,8 +49,8 @@ class Pendulum(Env):
 
         # Define the observation space
         self.observation_shape = (2, )
-        self.observation_space = spaces.Box(low  = np.array([-np.pi/2, -8]), 
-                                            high = np.array([+np.pi/2, +8]),
+        self.observation_space = spaces.Box(low  = np.array([-np.pi, -8]), 
+                                            high = np.array([+np.pi, +8]),
                                             dtype = np.float32) 
 
         # Define an action space ranging from -2 to 2, which is the amount of tourque that must be applied
@@ -124,6 +124,12 @@ class Pendulum(Env):
         # Define the life time for termination criterial
         self.alive = 0 
 
+      while self.theta > np.pi:
+          self.theta = self.theta - 2*np.pi 
+        
+      while self.theta < -np.pi:
+        self.theta = self.theta + 2*np.pi
+
       # Set the initial action
       self.tourq = np.array([0])
 
@@ -168,7 +174,8 @@ class Pendulum(Env):
           elif key != 255:
             # Exit at any key
             self.apply_external_tourq = -2
-
+          return self.canvas
+          
       elif mode == "rgb_array":
         return self.canvas
     
@@ -241,6 +248,12 @@ class Pendulum(Env):
       
       self.theta, self.dtheta = sol[-1,0], sol[-1,1]
       self.t += self.dt
+
+      while self.theta > np.pi:
+          self.theta = self.theta - 2*np.pi 
+        
+      while self.theta < -np.pi:
+        self.theta = self.theta + 2*np.pi
 
       self.observation = [self.theta, self.dtheta]
 

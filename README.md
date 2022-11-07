@@ -138,7 +138,7 @@ q, any other key : finish the testing
 ```
 You can see the previous in the following window:
 <p align="center">
-  <img src="https://github.com/Reinforcement-Learning-F22/DoublePendulum/blob/main/img/SP_continues_mode.jpg" />
+  <img src="https://github.com/Reinforcement-Learning-F22/DoublePendulum/blob/main/img/SP_continues_mode.png" />
 </p>
 
 ## Test with mass change

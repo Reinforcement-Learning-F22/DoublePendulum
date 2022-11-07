@@ -149,7 +149,7 @@ We change the mass randomally (20%) then we evalute the model and we have succes
 </p>
 
 2. swing_up mode
-We change the mass randomally (20%) then we evalute the model and we have success rate of 100%, and that is logical because the system is fully actuated and the only situation it could fail if the tourqe of the motor is not able to hold the mass.
+We change the mass randomally (20%) then we evalute the model and we have success rate of 100%, and that is logical because the system is fully actuated and the only situation it could fail if the tourqe of the motor is not able to hold the mass, but here it is very clear that the return is very connected to the value of the mass because the dynamics of the system will change, which mean the response of the system for any action will be diffferent, but the result is good enough and we won't made any improvment.
 <p align="center">
   <img src="https://github.com/Reinforcement-Learning-F22/DoublePendulum/blob/main/img/SP_Swing_Up.png" />
 </p>

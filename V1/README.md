@@ -99,6 +99,10 @@ For this reason, this part of the function is a linear
 dependence of only the angle of the first pendulum plus a penalty for loss of
 balance.
 
+<p align="center">
+  <img src="https://github.com/Reinforcement-Learning-F22/DoublePendulum/blob/main/img/Reward%20Equation.png"/>
+</p>
+
 ### Environment parameters
 
 This environment provides two parameters that can change the way it works.

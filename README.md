@@ -153,3 +153,118 @@ We change the mass randomally (20%) then we evalute the model and we have succes
 <p align="center">
   <img src="https://github.com/Reinforcement-Learning-F22/DoublePendulum/blob/main/img/SP_Swing_Up.png" />
 </p>
+
+
+## Dynamics of Double Pendulum (Pendubot)
+
+<p align="center">
+  <img src="https://diego.assencio.com/images/physics/double-pendulum.png" />
+</p>
+
+a double pendulum is a pendulum with another pendulum attached to its end, is a simple physical system that exhibits rich dynamic behavior with a strong sensitivity to initial conditions.
+
+The motion of a double pendulum is governed by a set of coupled ordinary differential equations and is chaotic.
+
+<table class="fraction">
+  <tbody>
+    <tr>
+      <td rowspan="2"><i>θ</i><sub>1</sub>''&nbsp;=&nbsp;</td>
+      <td>
+        −<i>g</i> (2 <i>m</i><sub>1</sub> + <i>m</i><sub>2</sub>) sin <i>θ</i
+        ><sub>1</sub> − <i>m</i><sub>2</sub> <i>g</i> sin(<i>θ</i><sub>1</sub> −
+        2 <i>θ</i><sub>2</sub>) − 2 sin(<i>θ</i><sub>1</sub> − <i>θ</i
+        ><sub>2</sub>) <i>m</i><sub>2</sub> (<i>θ</i><sub>2</sub>'<sup>2</sup>
+        <i>L</i><sub>2</sub> + <i>θ</i><sub>1</sub>'<sup>2</sup> <i>L</i
+        ><sub>1</sub> cos(<i>θ</i><sub>1</sub> − <i>θ</i><sub>2</sub>))
+      </td>
+    </tr>
+    <tr>
+      <td class="upper_line">
+        <i>L</i><sub>1</sub> (2 <i>m</i><sub>1</sub> + <i>m</i><sub>2</sub> −
+        <i>m</i><sub>2</sub> cos(2 <i>θ</i><sub>1</sub> − 2 <i>θ</i
+        ><sub>2</sub>))
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="fraction">
+  <tbody>
+    <tr>
+      <td rowspan="2"><i>θ</i><sub>2</sub>''&nbsp;=&nbsp;</td>
+      <td>
+        2 sin(<i>θ</i><sub>1</sub> − <i>θ</i><sub>2</sub>) (<i>θ</i
+        ><sub>1</sub>'<sup>2</sup> <i>L</i><sub>1</sub> (<i>m</i><sub>1</sub> +
+        <i>m</i><sub>2</sub>) + <i>g</i>(<i>m</i><sub>1</sub> + <i>m</i
+        ><sub>2</sub>) cos <i>θ</i><sub>1</sub> + <i>θ</i><sub>2</sub>'<sup
+          >2</sup
+        >
+        <i>L</i><sub>2</sub> <i>m</i><sub>2</sub> cos(<i>θ</i><sub>1</sub> −
+        <i>θ</i><sub>2</sub>))
+      </td>
+    </tr>
+    <tr>
+      <td class="upper_line">
+        <i>L</i><sub>2</sub> (2 <i>m</i><sub>1</sub> + <i>m</i><sub>2</sub> −
+        <i>m</i><sub>2</sub> cos(2 <i>θ</i><sub>1</sub> − 2 <i>θ</i
+        ><sub>2</sub>))
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+and after solving the differntial equations using scipy library;
+
+```python
+from scipy.integrate import odeint
+sol = odeint(self.sys_ode, x0, [0, self.dt], args=(action, ))
+self.theta1, self.theta2, self.dtheta1, self.dtheta2 = sol[-1, 0], sol[-1, 1], sol[-1, 2], sol[-1, 3]
+```
+and then simply plotting the results after calculating the positions of the masses we get:
+
+![Double Pendulum Without Friction](https://github.com/Reinforcement-Learning-F22/DoublePendulum/blob/main/img/Simulation_no_f.gif)
+
+but as you see we still have the problem of friction, without it the model is not realistic enough and moduling the previous equations into python, and for that we solve the problem by using Dynamics of Manipulators (we consider the Double Pendulum as a 2DOF manipulator).
+
+The Equation of motion for most mechanical systems may be written in following form:
+
+$Q=D(q)q¨+C(q,q˙)q˙+g(q)+Qd=D(q)q¨+c(q,q˙)+g(q)+Qd=D(q)q¨+h(q,q˙)+Qd$
+
+>where:
+>* $\mathbf{Q} \in \mathbb{R}^n$ - generalized forces corresponding to generilized coordinates
+>* $\mathbf{Q}_d \in \mathbb{R}^n$ - generalized disippative forces (for instance friction)
+>* $\mathbf{q} \in \mathbb{R}^{n}$ - vector of generilized coordinates
+>* $\mathbf{D} \in \mathbb{R}^{n \times n}$ - positive definite symmetric inertia matrix 
+>* $\mathbf{C} \in \mathbb{R}^{n \times n}$ - describe 'coefficients' of centrifugal and Coriolis forces
+>* $\mathbf{g} \in \mathbb{R}^{n}$ - describes effect of gravity and other position depending forces
+>* $\mathbf{h} \in \mathbb{R}^n$ - combined effect of $\mathbf{g}$ and $\mathbf{C}$
+
+In order to find the EoM we will use the Lagrange-Euler equations:
+
+$d/dt(∂L/∂q˙i)−∂L/∂qi=Qi−∂R/∂q˙i,i=1,2,…,n$
+
+>where:
+>* $\mathcal{L}(\mathbf{q},\dot{\mathbf{q}}) \triangleq E_K - E_\Pi \in \mathbb{R}$ Lagrangian of the system  
+>* $\mathcal{R} \in \mathbb{R}$ Rayleigh function  (describes energy dissipation)
+
+
+and here we add two dissipative elements in this system, namely "dampers" with coefficients  $b1,b2$  (viscous friction), their dissipation function is given as:
+
+$\mathcal{R} = \frac{1}{2}\ ∑  b_j \dot{\alpha}^2_j$
+
+and after applying Lagrange formalism to obtain equations of motion;
+
+$I_1\ddot{\alpha}_1 + l_1^2 (m_1 + m_2) \ddot{\alpha}_1 + l_1 l_2 m_2 \cos(\alpha_1 - \alpha_2)\ddot{\alpha}_2 +$ 
+$l_1 l_2 m_2 \sin(\alpha_1 - \alpha_2)\dot{\alpha}^2_2$
+$+l_1 m_1 g \cos \alpha_1 + l_1 m_2 g \cos \alpha_2 + b_1 \dot{\alpha}_1 =u_1$
+$l_1 l_2 m_2 \cos(\alpha_1 - \alpha_2)\ddot{\alpha}_1 + I_2 \ddot{\alpha} + l_2^2 m_2 \ddot{\alpha}_2 - l_2 m_2 l_1 \sin(\alpha_1 - \alpha_2)\dot{\alpha}^2_1 + l_2 m_2 g \cos \alpha_2+ b_2 \dot{\alpha}_2 = u_2$
+
+Now we can find the  $D,C,g$ . all details are in the code DynamicsDP.py.
+
+and so we get:
+
+![Double Pendulum With Friction](https://github.com/Reinforcement-Learning-F22/DoublePendulum/blob/main/img/Simulation_f.gif)
+
+## Training the Double Pendulum - Balancing
+
+for balancing the task is simple enough to be solved by a simple idea with a simple reward function; since the DP is starting from around the vertical position, we just give negatice reward for speeds and the theta1 and theta2 to be far away from the vertical position as follows;

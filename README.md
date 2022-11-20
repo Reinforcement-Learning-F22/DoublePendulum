@@ -278,4 +278,21 @@ $reward= - ( a ({\pi}- \theta_2)^4+ b (\theta_1)^2 + c (\dot{\theta_1})^2 (1.1- 
 
 
 it was trained for 10,000,000 timesteps for 24 hours and it could not swing up and balance, it could only swing up.
-then it occured to us since it seems that it needs 2 agents, one for swing up and the other for balancing vertically , we decided to use if statement in the reward function
+then it occured to us since it seems that it needs 2 agents, one for swing up and the other for balancing vertically , we decided to use if statement in the reward function.
+
+The task that the agent must perform consists of two phases. In the first one, it has to swing the second pendulum vertically. 
+In the second, while keeping the balance, it has to move the first pendulum to the target point. 
+For this reason, the reward function has been split into two expressions.
+The first is the weighted sum of the linear dependencies of pendulum deflection angles. 
+It is awarded when the second pendulum is inclined from the vertical
+by an angle of more than 10°. The values of the parameters of this sum were selected to
+promote the swing of the second pendulum more than to align the first one. The
+second formula works when the angle of the pendulum to the vertical is less than 10°. In
+this phase, the agent must be concerned mainly with not losing his balance and moving the first pendulum closer to the target point. 
+For this reason, this part of the function is a linear
+dependence of only the angle of the first pendulum plus a penalty for loss of
+balance. (all angles in the equation are normalized, ${\theta_1}, {\theta_2} \in [0,1]$ ) 
+
+<p align="center">
+  <img src="https://github.com/Reinforcement-Learning-F22/DoublePendulum/blob/main/img/Reward%20Equation.png"/>
+</p>

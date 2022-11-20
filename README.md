@@ -267,4 +267,15 @@ and so we get:
 
 ## Training the Double Pendulum - Balancing
 
-for balancing the task is simple enough to be solved by a simple idea with a simple reward function; since the DP is starting from around the vertical position, we just give negatice reward for speeds and the theta1 and theta2 to be far away from the vertical position as follows;
+for balancing the task is simple enough to be solved by a the idea of a simple reward function; since the DP is starting from around the vertical position, we just give negatice reward for speeds and the theta1 and theta2 to be far away from the vertical position as follows;
+
+## Training the Double Pendulum - Swing_up
+we've tried over 50 different reward functions (the models and the some of the reward functions are uploaded) to make it swing up AND balance! and we couldn't succeed until we used an if statement in the reward function, and for continuous input RL problems, continuous Reward functions might not work!
+for example one of the reward functions (that will be explained in details);
+
+
+$reward= - ( a ({\pi}- \theta_2)^4+ b (\theta_1)^2 + c (\dot{\theta_1})^2 (1.1- cos(\theta_1)) + d \dot{\theta_2}^2 (1.1- cos(\theta_1)) + e 0.01 Tourq^2)$
+
+
+it was trained for 10,000,000 timesteps for 24 hours and it could not swing up and balance, it could only swing up.
+then it occured to us since it seems that it needs 2 agents, one for swing up and the other for balancing vertically , we decided to use if statement in the reward function

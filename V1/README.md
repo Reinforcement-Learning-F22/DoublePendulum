@@ -9,7 +9,7 @@ reinforcement learning libraries such as StableBaselines3. There is also a sampl
 code for training and evaluating agents in this environment.
 
 <p align="center">
-  <img src="media/cartpole_540.gif"/>
+  <img src="https://github.com/Reinforcement-Learning-F22/DoublePendulum/blob/main/img/Double%20Pendulum%20Swing%20up.gif"/>
 </p>
 
 ## Installation

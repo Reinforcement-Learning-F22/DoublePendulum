@@ -97,7 +97,7 @@ second formula works when the angle of the pendulum to the vertical is less than
 this phase, the agent must be concerned mainly with not losing his balance and moving the first pendulum closer to the target point. 
 For this reason, this part of the function is a linear
 dependence of only the angle of the first pendulum plus a penalty for loss of
-balance.
+balance. (all angles in the equation are normalized, ${\theta_1}, {\theta_2} \in [0,1]$ ) 
 
 <p align="center">
   <img src="https://github.com/Reinforcement-Learning-F22/DoublePendulum/blob/main/img/Reward%20Equation.png"/>

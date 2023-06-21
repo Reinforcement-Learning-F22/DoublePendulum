@@ -2,6 +2,38 @@
 This is about make a RL agent to do the control of double pendulum (Pendubot) and achieve the swing up and balancing problem with parameters uncertainty. 
 
 
+https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/903c24d8-d696-44e9-aea4-dff76520e62e
+
+
+
+https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/58698977-835f-408b-b87a-bc8b1e24814a
+
+
+https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/9edfc3a5-190f-4865-b5f1-402b4bce0564
+
+
+
+https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/dc798997-70a8-4a3e-a1aa-aa819ccb8b69
+
+
+https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/329dc299-8e21-46c0-9c75-0bb324d11450
+
+
+
+https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/c0c78d81-9163-44cb-adde-bc5296eb3c68
+
+
+https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/60b25586-28b4-4d5a-a70a-4b27ca17e1bb
+
+
+
+https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/f02b2b9d-6aab-4a67-99d2-ec58b279db2e
+
+
+
+
+
+
 
 ## Prerequisites
 

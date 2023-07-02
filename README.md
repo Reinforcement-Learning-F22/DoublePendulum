@@ -1,6 +1,7 @@
 # DoublePendulum
 This is about make a RL agent to do the control of double pendulum (Pendubot) and achieve the swing up and balancing problem with parameters uncertainty. 
 
+Here are some **videos** that describe how our agent was able to swing up and balance the Pendubot, **with parameters uncertainty**:
 
 https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/903c24d8-d696-44e9-aea4-dff76520e62e
 

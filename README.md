@@ -1,31 +1,50 @@
 # DoublePendulum
 This is about make a RL agent to do the control of double pendulum (Pendubot) and achieve the swing up and balancing problem with parameters uncertainty. 
 
-Here are some **videos** that describe how our agent was able to swing up and balance the Pendubot, **with parameters uncertainty**:
+Here are some **videos** that describe how our agent was able to swing up and balance the Pendubot, **with parameters uncertainty using Greedy-Divide and Conquer algorithm**:
+
+
+in all teh videos the models were trained only on these parameters:
+
+
+**$m_1 = 1 Kg, m_2 = 1 Kg , l_1 = 160 mm, l_2 = 160 mm$**
+
+and we will test several cases 
+
+In this case we test the original configurations &#8595;:
+
+https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/58698977-835f-408b-b87a-bc8b1e24814a
+
+
+In this case $l_1 = 70 mm$ was cahnged, the rest of the parameters are fixed &#8595;:
 
 https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/903c24d8-d696-44e9-aea4-dff76520e62e
 
 
 
-https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/58698977-835f-408b-b87a-bc8b1e24814a
-
+In this case the second mass $m_2 = 2 Kg$ was cahnged by 100% , the rest of the parameters are fixed &#8595;:
 
 https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/9edfc3a5-190f-4865-b5f1-402b4bce0564
 
-
+In this case the first mass $m_1 = 2 Kg$ was cahnged by 100% , the rest of the parameters are fixed &#8595;:
 
 https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/dc798997-70a8-4a3e-a1aa-aa819ccb8b69
+
+In this case the first mass $m_1 = 3 Kg$ was cahnged by 200% , the rest of the parameters are fixed &#8595;:
 
 
 https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/329dc299-8e21-46c0-9c75-0bb324d11450
 
+In this case the second mass $m_2 = 2.5 Kg$ was cahnged by 250% , the rest of the parameters are fixed &#8595;:
 
 
 https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/c0c78d81-9163-44cb-adde-bc5296eb3c68
 
+In this case all the parameters are randomised $m_1 = 1.1 Kg, m_2 = 1.5 Kg , l_1 = 145 mm, l_2= 100 mm$ &#8595;:
 
 https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/60b25586-28b4-4d5a-a70a-4b27ca17e1bb
 
+In this case all the parameters are randomised $m_1 = 1.1 Kg, m_2 = 1.3 Kg , l_1 = 120 mm, l_2 = 190 mm$ &#8595;:
 
 
 https://github.com/Reinforcement-Learning-F22/DoublePendulum/assets/90598253/f02b2b9d-6aab-4a67-99d2-ec58b279db2e
